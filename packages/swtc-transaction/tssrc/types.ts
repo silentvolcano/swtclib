@@ -133,3 +133,30 @@ export interface IRelationTxOptions {
   secret?: string
   sequence?: string | number
 }
+
+export interface ISignerListTxOptions {
+  lists: any[]
+  account?: string
+  address?: string
+  threshold: string | number
+}
+
+export interface ISignFirstTxOptions {
+  tx: any
+  account?: string
+  address?: string
+  secret: string
+}
+
+export interface ISignOtherTxOptions {
+  tx_json: any
+  account?: string
+  address?: string
+  secret: string
+}
+
+export interface IMultiSigningOptions {
+  account?: string
+  address?: string
+  secret: string
+}

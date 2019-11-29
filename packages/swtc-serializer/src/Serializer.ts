@@ -46,7 +46,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
 
   function readOrPeek(advance) {
     // tslint:disable-next-line
-    return function (bytes) {
+    return function(bytes) {
       const start = this.pointer
       const end = start + bytes
 
@@ -117,6 +117,17 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         )
       }
       so.serialize(obj)
+      return so
+    }
+
+    /**
+     * Use TRANSACTION_TYPES info to check if the input TX missing any info
+     *
+     * @static
+     * @memberof Serializer
+     */
+    public static adr_json(so, account) {
+      so.append(Wallet.KeyPair.convertAddressToBytes(account))
       return so
     }
 
@@ -252,7 +263,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
 
     public read = readOrPeek(true)
     public peek = readOrPeek(false)
-    private buffer: any[] | Buffer
+    private buffer: number[]
     private pointer: number
 
     constructor(buf) {
@@ -260,8 +271,10 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
        * buf is a byte array
        * pointer is an integer index of the buf
        */
-      if (Array.isArray(buf) || (Buffer && Buffer.isBuffer(buf))) {
+      if (Array.isArray(buf)) {
         this.buffer = buf
+      } else if (Buffer && Buffer.isBuffer(buf)) {
+        this.buffer = Array.prototype.slice.call(buf, 0)
       } else if (typeof buf === "string") {
         this.buffer = hex_str_to_byte_array(buf) // sjcl.codec.bytes.fromBits(sjcl.codec.hex.toBits(buf));
       } else if (!buf) {
@@ -306,7 +319,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
      * @memberof Serializer
      */
     // tslint:disable-next-line
-    public append = function (bytes) {
+    public append = function(bytes) {
       if (bytes instanceof Serializer) {
         bytes = bytes.buffer
       }
